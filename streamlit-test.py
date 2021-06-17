@@ -12,53 +12,20 @@ import pytesseract
 st.title("Time Machine")
 zone = st.selectbox('Time zone',list(pytz.all_timezones))
 
-canvas_result = st_canvas(
-    fill_color="rgba(255, 255, 255, 1)",
-    stroke_width=10,
-    stroke_color="rgba(0, 0, 0, 1)",
-    background_color="rgba(255, 255, 255, 1)",
-    update_streamlit=True,
-    height=280,
-    width=680,
-    drawing_mode="freedraw",
-    key="canvas",
-)
+@st.cache
+def draw_canvas():
 
-# def find_contours(nparray):
-
-#     contours, hierarchy = cv2.findContours(nparray,cv2.RETR_LIST,cv2.CHAIN_APPROX_NONE)
-
-#     digits = []
-#     for cnt in contours:
-#         # compute the bounding box of the contour
-#         (x, y, w, h) = cv2.boundingRect(cnt)
-#         # if the contour is sufficiently large, it must be a digit
-#         # if w >= 50 and (h >= 100):
-
-#         nparray = cv2.rectangle(nparray, [x, y, w, h], (0, 0, 0))
-#         test = nparray[y:y+h,x:x+w]
-#         digits.append((x, cv2.resize(test, [28, 28])))
-
-#     final_digits = list(map(lambda tup: tup[1], sorted(digits)[1:]))
-
-#     return final_digits
-
-
-# def use_model_for_prediction(final_digits):
-
-#     model = load_model('Allan_model.h5')
-#     pred_digits=[]
-#     for i in range(len(final_digits)):
-#         ex = np.expand_dims(final_digits[i], axis=0)
-#         ex = np.expand_dims(ex, axis=-1)
-#         st.image(final_digits[i])
-#         pred_digit = model.predict(ex)
-#         pred_digits.append(np.argmax(pred_digit[0]))
-#         st.write(pred_digit)
-#         st.write(f"Predicted digit is {np.argmax(pred_digit[0])}")
-
-#     print("pred ds", pred_digits)
-#     return ''.join([str(i) for i in pred_digits])
+    canvas_result = st_canvas(
+        fill_color="rgba(255, 255, 255, 1)",
+        stroke_width=10,
+        stroke_color="rgba(0, 0, 0, 1)",
+        background_color="rgba(255, 255, 255, 1)",
+        update_streamlit=True,
+        height=280,
+        width=680,
+        drawing_mode="freedraw",
+        key="canvas",
+    )
 
 
 def convert_to_datetime(numbers: str):
@@ -91,12 +58,10 @@ def convert_time(digits: str, target_timezone: str):
     
     return f"{digits} in UTC is {output_formatted} in {target_timezone}"
 
+draw_canvas()
 
 # if canvas_result.image_data is not None:
 if st.button('Press to process image'):
-
-    # PULL image from streamlit
-    st.image(canvas_result.image_data)
 
     # Pass image into tesseract
     # we get e.g., 12 15
