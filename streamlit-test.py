@@ -24,7 +24,6 @@ canvas_result = st_canvas(
     key="canvas",
 )
 
-pytesseract.image_to_string(Image.open('images/Drawing.jpeg'))
 # def find_contours(nparray):
 
 #     contours, hierarchy = cv2.findContours(nparray,cv2.RETR_LIST,cv2.CHAIN_APPROX_NONE)
@@ -97,12 +96,16 @@ def convert_time(digits: str, target_timezone: str):
 if st.button('Press to process image'):
 
     # PULL image from streamlit
+    st.image(canvas_result.image_data)
 
     # Pass image into tesseract
-    
+    # we get e.g., 12 15
+    image_to_number = pytesseract.image_to_string(canvas_result.image_data)
+
     # pass digits to time zone conversion
+    str_to_datetime = convert_time(image_to_number,zone)
 
     # streamlit code to output the converted time
     st.write("Converting time to the time zone " + str(zone))
-    st.write(convert_time(pred_digits, zone))
+    st.write(str_to_datetime)
     st.write("With ❤️ from the Deepnote community")
